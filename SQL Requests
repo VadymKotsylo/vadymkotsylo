@@ -1,0 +1,40 @@
+#Determine the number of different products and the average number of 
+units of goods for each order.
+
+SELECT Order ID, COUNT(ProductID), AVG(Quantity)
+FROM Order Details
+GROUP BY OrderID;
+
+#Identify products with a sales quantity of more than 100.
+
+SELECT ProductID, SUM(Quantity) AS TotalSold
+FROM OrderDetails
+GROUP BY ProductID
+HAVING SUM(Quantity) > 100;
+
+#Create a request for data selection: customer name, surname 
+employee, delivery service phone number for each order.
+
+SELECT Customers.CustomerName, Shippers.Phone, Employees.LastName
+FROM (((Orders INNER JOIN CUstomers ON Orders.CustomerID = Customers.CustomerID)
+INNER JOIN Shippers ON Orders.ShipperID = ShipperID)
+INNER JOIN Employees ON Orders.EmployeeID = EmployeeID)
+
+#Determine the amount of payment for each cheque, select the top 10 
+orders.
+
+SELECT TOP 10 Orders.OrderID, SUM(OrderDetails.Quantity * Products.Price) AS TotalAmount
+FROM ((Orders INNER JOIN OrderDetails ON Orders.OrderID = OrderDetails.OrderID)
+INNER JOIN Products ON Products.ProductID = OrderDetails.ProductID)
+GROUP BY Orders.OrderID
+ORDER BY SUM(OrderDetails.Quantity * Products.Price) DESC;
+
+#Identify customers and the categories of goods they buy.
+
+SELECT DISTINCT Customers.CustomerID, Customers.CustomerName, Categories.CategoryName
+FROM ((((Customers INNER JOIN Orders ON Customers.CustomerID = Orders.CustomerID)
+INNER JOIN OrderDetails.ProductID = Products.ProductID)
+INNER JOIN Products ON OrderDetails.ProductID = Products.ProductID)
+INNER JOIN Categories ON Products.CategoryID = Categories.CategoryID)
+
+
