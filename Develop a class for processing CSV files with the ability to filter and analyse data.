@@ -1,0 +1,37 @@
+import pandas as pd
+
+class DataProcessor:
+    def __init__(self, file_path, delimiter=',', has_headers=True):
+        self.file_path = file_path
+        self.delimiter = delimiter
+        self.has_headers = has_headers
+        self.dataframe = self._load_data()
+    
+    def _load_data(self):
+        try:
+            df = pd.read_csv(self.file_path, delimiter=self.delimiter, header=0 if self.has_headers else None)
+            return df
+        except Exception as e:
+            raise ValueError(f"Помилка завантаження файлу: {e}")
+    
+    def get_all_countries(self):
+        return self.dataframe['Country'].tolist()
+    
+    def filter_by_population(self, min_population=10_000_000):
+        return self.dataframe[self.dataframe['Population'] > min_population]
+    
+    def filter_by_population_and_area(self, min_population=10_000_000, ukraine_area=603500):
+        return self.dataframe[(self.dataframe['Population'] > min_population) & (self.dataframe['Area'] > ukraine_area)]
+    
+    def top_agriculture_countries(self, top_n=10):
+        return self.dataframe.sort_values(by='Agriculture', ascending=False).head(top_n)
+    
+    def countries_with_sea_access(self):
+        return self.dataframe[self.dataframe['Has_Sea_Access'] == True]
+
+# Приклад використання:
+processor = DataProcessor("C:/Users/vadik/OneDrive/Рабочий стол/countries_of_the_world.csv")
+if processor.dataframe is not None:
+    print(processor.filter_by_population().head(10))
+else:
+    print("Дані не завантажено.")
